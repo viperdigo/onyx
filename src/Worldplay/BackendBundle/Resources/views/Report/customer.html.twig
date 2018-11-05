@@ -1,0 +1,26 @@
+{% extends '::base_report.html.twig' %}
+
+{% block body %}
+
+
+    <table class="table table-bordered table-hover" style="width: 100%">
+        <thead>
+        <tr>
+            <th>{{ "Customer"|trans }}</th>
+            <th>{{ "Balance"|trans }}</th>
+            <th>{{ "LastPayment"|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in rows %}
+            <tr>
+                <td>{{ row._name }}</td>
+                <td>{{ row._balance }}</td>
+                <td>{{ row._date|date('d/m/Y') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}

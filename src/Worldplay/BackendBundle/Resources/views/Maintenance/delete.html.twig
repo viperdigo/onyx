@@ -1,0 +1,28 @@
+{% set titleModal = "Delete Maintenance"|trans %}
+
+{% set bodyVariable = "<strong data-id=''></strong> - <strong data-name=''></strong>" %}
+{% set bodyMsg = "Tem certeza que deseja excluir a manutenção " ~ bodyVariable ~ "?" %}
+{% set btnAction = "Delete"|trans %}
+
+<div id="modal-delete" class="modal fade static" role="dialog" aria-labelledby="orderModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">{{ titleModal }}</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    {{ bodyMsg|raw }}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <form method="get">
+                    <button type="submit" class="btn red">{{ btnAction }}</button>
+                    <button type="button" data-dismiss="modal" class="btn default">{{ "Cancel"|trans }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

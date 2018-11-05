@@ -1,0 +1,68 @@
+{% extends '::layout.html.twig' %}
+
+{% block content %}
+    <div class="page-content-wrapper">
+        <div class="page-content">
+
+            <div class="page-head">
+                <div class="page-title">
+                    <h1>{% block contentTitle %}Page Title Default{% endblock %}
+                        <small>{% block contentSubtitle %}{% endblock %}</small>
+                    </h1>
+                </div>
+            </div>
+
+            {% for flashMessage in app.session.flashbag.get('success') %}
+
+                <div class="alert alert-success">
+                    <strong>Sucesso:</strong> {{ flashMessage }}
+                </div>
+
+            {% endfor %}
+
+            {% for flashMessage in app.session.flashbag.get('info') %}
+
+                <div class="alert alert-info">
+                    <strong>Info:</strong> {{ flashMessage }}
+                </div>
+
+            {% endfor %}
+
+            {% for flashMessage in app.session.flashbag.get('warning') %}
+
+                <div class="alert alert-warning">
+                    <strong>Erro:</strong> {{ flashMessage }}
+                </div>
+
+            {% endfor %}
+
+            {% for flashMessage in app.session.flashbag.get('error') %}
+
+                <div class="alert alert-danger">
+                    <strong>Erro:</strong> {{ flashMessage }}
+                </div>
+
+            {% endfor %}
+
+            <div class="row">
+                <div class="col-md-{% block lengthColumn %}12{% endblock %}">
+                    {% block contentBody %}{% endblock %}
+                </div>
+            </div>
+
+            <div class="modal fade" id="modal" role="basic" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <img src="{{ asset('bundles/backend/metronic/assets/admin/layout/img/loading-spinner-blue.gif') }}" alt="" class="loading">
+											<span>
+											&nbsp;&nbsp;{{ "Loading..."|trans }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

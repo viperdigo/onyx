@@ -1,0 +1,192 @@
+Search: Procurar
+Customers: Clientes
+New: Novo
+Edit: Editar
+Delete: Excluir
+General: Principal
+Users: Usuários
+Type: Tipo
+Name: Nome
+Address: Endereço
+Zipcode: Cep
+Phone: Telefone
+Email: E-mail
+Balance: Saldo
+Actions: Ações
+Maintenance Product: Manut. de Produtos
+Product/Note: Produto/Obs
+cabinet: Gabinete
+compound: Composto
+simple: Simples
+Products: Produtos
+Orders: Pedidos
+Payment: Pagamento
+Supplier: Fornecedor
+Suppliers: Fornecedores
+Document: CNPJ
+Id Customer: Id Cliente
+Id Order: Pedido
+Id Maintenance: Id Manutenção
+Id Payment: Id Pagamento
+Id Product: Id Produto
+Id Supplier: Id Fornecedor
+Block: Bloquear
+Activate: Ativar
+Activated Customer: Ativar Cliente
+Blocked Customer: Bloquear Cliente
+Cancel: Cancelar
+Save: Salvar
+Back: Voltar
+Maintenance: Manutenção
+Customer: Cliente
+Product: Produto
+Quantity: Qtde
+EntryAt: Entrada em
+SendAt: Enviado em
+ReceiveAt: Recebido em
+ReturnAt: Retornado em
+CanceledAt: Cancelado em
+Update: Atualizar
+Maintenances: Manutenções
+Delete Maintenance: Excluir Manutenção
+Status: Status
+entered: Entrada
+sent: Enviado
+received: Recebido
+returned: Devolvido
+Change Status Maintenance: Alterar status
+Print: Imprimir
+Confirm: Confirmar
+Amount: Valor
+Note: Observação
+Payments: Pagamentos
+Delete Payment: Excluir Pagamento
+ReceivedAt: Recebido em
+Received at: Data Pagamento
+Simple: Simples
+Compound: Composto
+Cabinet: Gabinete
+Simple Product: Produto Simples
+Description: Desc.
+Cost value: Vlr. Custo
+Sale value: Vlr. Venda
+Storage: Estoque
+simple: Simples
+compound: Composto
+cabinet: Gabinete
+Product Data: Dados do Produto
+Components: Componentes
+Product Reference: Produto Referência
+Components with: Componentes de
+Close: Fechar
+Loading...: Carregando...
+Composition: Composição
+Total: Total
+Subtotal: Subtotal
+Discount: Desconto
+Items: Itens
+Customer Data: Dados do cliente
+Order: Pedido
+Delete Supplier: Excluir Fornecedor
+Reports: Relatórios
+Select...: Selecione...
+Search customer by name...: Busca cliente por nome...
+days: dias
+All: Todos
+Statement: Extrato
+Credit: Crédito
+Debit: Débito
+Date: Data
+List: Listar
+Saled Value: Vlr. Vendido
+UpdateAt: Ult. Atualização
+CreatedAt: Criado em
+blocked: Bloqueado
+activated: Ativo
+LastPayment: Últ. Pagamento
+Totals: Totais
+Export PDF: Exportar PDF
+User type: Tipo Usuário
+Is active: Ativo
+Username: Usuário
+Filtrate: Filtrar
+canceled: Cancelado
+
+# Messages
+
+'Order %number% excluded.': Pedido %number% excluído.
+'Delete Order': Excluir Pedido
+Customer not selected: Nenhum cliente selecionado.
+Order %number% created: Pedido %number% criado.
+Order %number% updated: Pedido %number% atualizado.
+No moviments for period: Nenhum movimento para período
+'Could not perform this action, contact your administrator': Não foi possível executar esta ação, contate o administrador
+'Could not enable the customer %name%': Não foi possível ativar o cliente %name%
+'Customer %name% activated.': Cliente %name% ativado.
+'Could not lock, contact your administrator': Não foi possível bloquear, contate o administrador
+'Customer is already locked.': Cliente já está bloqueado.
+'Customer %name% blocked.': Cliente %name% bloqueado.
+No data found: Nenhum dado encontrado
+You're lost.: Você está perdido.
+Return home: Retornar para home.
+Delete Customer: Excluir Cliente
+Customer %name% created.: Cliente %name% criado.
+Customer %name% changed.: Cliente %name% alterado.
+We can not find the page you're looking for.: Nós não podemos encontrar a página que você está procurando.
+'Customer %name% excluded.': Cliente %name% excluido.
+'Could not delete, contact the administrator': Não foi possível excluir, contate o administrador
+'Customer %name% balance updated.': Saldo do(a) cliente %name% atualizado.
+
+
+#report/customer
+Worldplay\CoreBundle\Entity\Customer.id: Cliente
+Worldplay\CoreBundle\Entity\Customer.createdAt: Data
+Worldplay\CoreBundle\Entity\Customer.email: Email
+Worldplay\CoreBundle\Entity\Customer.phone: Telefone
+Worldplay\CoreBundle\Entity\Customer.status: Status
+Worldplay\CoreBundle\Entity\Customer.orders.createdAt: Data Pedido
+Worldplay\CoreBundle\Entity\Customer.name: Nome
+Worldplay\CoreBundle\Entity\Customer.payments.createdAt: Data Pagamento
+
+
+#report/maintenance
+Worldplay\CoreBundle\Entity\MaintenanceProduct.id: Manut.
+Worldplay\CoreBundle\Entity\MaintenanceProduct.statusLogs.status: Status
+Worldplay\CoreBundle\Entity\MaintenanceProduct.customer.name: Nome
+Worldplay\CoreBundle\Entity\MaintenanceProduct.statusLogs.createdAt: Data
+
+#order
+Worldplay\CoreBundle\Entity\Order.id: Pedido
+Worldplay\CoreBundle\Entity\Order.customer.name: Nome
+Worldplay\CoreBundle\Entity\Order.customer.id: Cliente
+Worldplay\CoreBundle\Entity\Order.createdAt: Data
+
+#payment
+Worldplay\CoreBundle\Entity\Payment.id: Pagamento
+Worldplay\CoreBundle\Entity\Payment.customer.name: Nome Cliente
+Worldplay\CoreBundle\Entity\Payment.customer.id: Cliente
+Worldplay\CoreBundle\Entity\Payment.createdAt: Data
+
+#product
+Worldplay\CoreBundle\Entity\Product.id: Produto
+Worldplay\CoreBundle\Entity\Product.type: Tipo
+Worldplay\CoreBundle\Entity\Product.description: Desc.
+Worldplay\CoreBundle\Entity\Product.createdAt: Data
+
+#maintenance
+Worldplay\CoreBundle\Entity\MaintenanceProduct.product.description: Desc. Produto
+Worldplay\CoreBundle\Entity\MaintenanceProduct.product.id: Produto
+Worldplay\CoreBundle\Entity\MaintenanceProduct.customer.id: Cliente
+
+customer_list_csv_action: Exportar CSV
+customer_export_pdf: Exportar PDF
+daterange start: data início
+daterange end: data fim
+to: até
+
+#pagination
+Next: Próximo
+Previous: Anterior
+
+#filtro
+Filter: Filtro

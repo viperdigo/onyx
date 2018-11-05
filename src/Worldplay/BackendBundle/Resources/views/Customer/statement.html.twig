@@ -1,0 +1,391 @@
+{% extends '::content.html.twig' %}
+
+
+{% block contentTitle %}{{ "Statement"|trans }}{% endblock %}
+
+{% block contentBody %}
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="portlet light bordered custom-filter">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-equalizer font-blue-sunglo"></i>
+                        <span class="caption-subject font-blue-sunglo bold uppercase">{{ customer.name }}</span>
+                        <span class="caption-helper"></span>
+                    </div>
+
+                    <div class="tools">
+
+                        <div class="btn-group">
+                            <a data-toggle="dropdown" href="javascript:;" class="btn btn-circle btn-default btn-sm">
+                                <i class="icon-settings"></i> {{ "Actions"|trans }} <i class="fa fa-angle-down"></i>
+                            </a>
+
+                            <ul role="menu" class="dropdown-menu">
+                                <li><a href="javascript:;" target="_blank">
+                                        <i class="fa fa-file-pdf-o" data-id="{{ customer.id }}"
+                                           data-days="{{ tabs[0] }}"
+                                           id="export-pdf"></i> {{ "Export PDF"|trans }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <a href="" class="collapse"></a>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="tabbable tabs-left">
+                        <ul class="nav nav-tabs">
+                            {% for tab in tabs %}
+                                {% if loop.index == 1 %}
+                                    <li class="active days">
+                                {% else %}
+                                    <li class="days">
+                                {% endif %}
+                                <a href="#tab{{ loop.index }}" data-toggle="tab">
+                                    <i data-days="{{ tab }}">{{ tab|trans }}</i><i>{{ "days"|trans }}</i></a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tab1">
+                                <div class="portlet-body">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr style="background-color: white;">
+                                            <th>{{ "Type"|trans }}</th>
+                                            <th>{{ "Date"|trans }}</th>
+                                            <th>{{ "Product/Note"|trans }}</th>
+                                            <th>{{ "Quantity"|trans }}</th>
+                                            <th>{{ "Amount"|trans }}</th>
+                                            <th>{{ "Debit"|trans }}</th>
+                                            <th>{{ "Credit"|trans }}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        {% set oldLineId = '' %}
+
+                                        {% for d in statement.tab1 %}
+
+                                            {% set note = '' %}
+                                            {% set typeName = d.typeId ~ ' - ' ~ d.type|trans %}
+                                            {% set date = d.createdAt|date('d/m/Y') %}
+                                            {% if d.note %}
+                                                {% set note = "Obs.: " ~ d.note %}
+                                            {% endif %}
+
+                                            {% if d.type == 'Order' %}
+
+                                                {% if oldLineId != d.typeId %}
+                                                    <tr class="warning">
+                                                        <td>{{ typeName }}</td>
+                                                        <td>{{ date }}</td>
+                                                        <td colspan="5">{{ note }}</td>
+                                                    </tr>
+                                                {% endif %}
+                                                <tr class="warning">
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>{{ d.product }}</td>
+                                                    <td>{{ d.quantity }}</td>
+                                                    <td>R$ {{ d.soldValue|number_format(2, ',', '.') }}</td>
+                                                    <td>R$ {{ d.amount|number_format(2, ',', '.') }}</td>
+                                                    <td></td>
+                                                </tr>
+
+
+                                                {% set oldLineId = d.typeId %}
+                                            {% else %}
+                                                <tr class="success">
+                                                    <td>{{ typeName }}</td>
+                                                    <td>{{ date }}</td>
+                                                    <td colspan="4">{{ note }}</td>
+                                                    <td>R$ {{ d.amount|number_format(2, ',', '.') }}</td>
+                                                </tr>
+                                            {% endif %}
+
+
+                                        {% endfor %}
+
+                                        {% if(statement.tab1|length == 0) %}
+                                            <tr>
+                                                <td colspan="7" align="center"><i>{{ "No moviments for period"|trans }}</i></td>
+                                            </tr>
+                                        {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="tab2">
+                                <div class="portlet-body">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr style="background-color: white;">
+                                            <th>{{ "Type"|trans }}</th>
+                                            <th>{{ "Date"|trans }}</th>
+                                            <th>{{ "Product/Note"|trans }}</th>
+                                            <th>{{ "Quantity"|trans }}</th>
+                                            <th>{{ "Amount"|trans }}</th>
+                                            <th>{{ "Debit"|trans }}</th>
+                                            <th>{{ "Credit"|trans }}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        {% set oldLineId = '' %}
+
+                                        {% for d in statement.tab2 %}
+
+                                            {% set note = '' %}
+                                            {% set typeName = d.typeId ~ ' - ' ~ d.type|trans %}
+                                            {% set date = d.createdAt|date('d/m/Y') %}
+                                            {% if d.note %}
+                                                {% set note = "Obs.: " ~ d.note %}
+                                            {% endif %}
+
+                                            {% if d.type == 'Order' %}
+
+                                                {% if oldLineId != d.typeId %}
+                                                    <tr class="warning">
+                                                        <td>{{ typeName }}</td>
+                                                        <td>{{ date }}</td>
+                                                        <td colspan="5">{{ note }}</td>
+                                                    </tr>
+                                                {% endif %}
+                                                <tr class="warning">
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>{{ d.product }}</td>
+                                                    <td>{{ d.quantity }}</td>
+                                                    <td>R$ {{ d.soldValue|number_format(2, ',', '.') }}</td>
+                                                    <td>R$ {{ d.amount|number_format(2, ',', '.') }}</td>
+                                                    <td></td>
+                                                </tr>
+
+
+                                                {% set oldLineId = d.typeId %}
+                                            {% else %}
+                                                <tr class="success">
+                                                    <td>{{ typeName }}</td>
+                                                    <td>{{ date }}</td>
+                                                    <td colspan="4">{{ note }}</td>
+                                                    <td>R$ {{ d.amount|number_format(2, ',', '.') }}</td>
+                                                </tr>
+                                            {% endif %}
+
+
+                                        {% endfor %}
+
+                                        {% if(statement.tab2|length == 0) %}
+                                            <tr>
+                                                <td colspan="7" align="center"><i>{{ "No moviments for period"|trans }}</i></td>
+                                            </tr>
+                                        {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="tab3">
+                                <div class="portlet-body">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr style="background-color: white;">
+                                            <th>{{ "Type"|trans }}</th>
+                                            <th>{{ "Date"|trans }}</th>
+                                            <th>{{ "Product/Note"|trans }}</th>
+                                            <th>{{ "Quantity"|trans }}</th>
+                                            <th>{{ "Amount"|trans }}</th>
+                                            <th>{{ "Debit"|trans }}</th>
+                                            <th>{{ "Credit"|trans }}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        {% set oldLineId = '' %}
+
+                                        {% for d in statement.tab3 %}
+
+                                            {% set note = '' %}
+                                            {% set typeName = d.typeId ~ ' - ' ~ d.type|trans %}
+                                            {% set date = d.createdAt|date('d/m/Y') %}
+                                            {% if d.note %}
+                                                {% set note = "Obs.: " ~ d.note %}
+                                            {% endif %}
+
+                                            {% if d.type == 'Order' %}
+
+                                                {% if oldLineId != d.typeId %}
+                                                    <tr class="warning">
+                                                        <td>{{ typeName }}</td>
+                                                        <td>{{ date }}</td>
+                                                        <td colspan="5">{{ note }}</td>
+                                                    </tr>
+                                                {% endif %}
+                                                <tr class="warning">
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>{{ d.product }}</td>
+                                                    <td>{{ d.quantity }}</td>
+                                                    <td>R$ {{ d.soldValue|number_format(2, ',', '.') }}</td>
+                                                    <td>R$ {{ d.amount|number_format(2, ',', '.') }}</td>
+                                                    <td></td>
+                                                </tr>
+
+                                                {% set oldLineId = d.typeId %}
+                                            {% else %}
+                                                <tr class="success">
+                                                    <td>{{ typeName }}</td>
+                                                    <td>{{ date }}</td>
+                                                    <td colspan="4">{{ note }}</td>
+                                                    <td>R$ {{ d.amount|number_format(2, ',', '.') }}</td>
+                                                </tr>
+                                            {% endif %}
+
+                                        {% endfor %}
+
+                                        {% if(statement.tab3|length == 0) %}
+                                            <tr>
+                                                <td colspan="7" align="center"><i>{{ "No moviments for period"|trans }}</i></td>
+                                            </tr>
+                                        {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="tab4">
+                                <div class="portlet-body">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr style="background-color: white;">
+                                            <th>{{ "Type"|trans }}</th>
+                                            <th>{{ "Date"|trans }}</th>
+                                            <th>{{ "Product/Note"|trans }}</th>
+                                            <th>{{ "Quantity"|trans }}</th>
+                                            <th>{{ "Amount"|trans }}</th>
+                                            <th>{{ "Debit"|trans }}</th>
+                                            <th>{{ "Credit"|trans }}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        {% set oldLineId = '' %}
+
+                                        {% for d in statement.tab4 %}
+
+                                            {% set note = '' %}
+                                            {% set typeName = d.typeId ~ ' - ' ~ d.type|trans %}
+                                            {% set date = d.createdAt|date('d/m/Y') %}
+                                            {% if d.note %}
+                                                {% set note = "Obs.: " ~ d.note %}
+                                            {% endif %}
+
+                                            {% if d.type == 'Order' %}
+
+                                                {% if oldLineId != d.typeId %}
+                                                    <tr class="warning">
+                                                        <td>{{ typeName }}</td>
+                                                        <td>{{ date }}</td>
+                                                        <td colspan="5">{{ note }}</td>
+                                                    </tr>
+                                                {% endif %}
+                                                <tr class="warning">
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>{{ d.product }}</td>
+                                                    <td>{{ d.quantity }}</td>
+                                                    <td>R$ {{ d.soldValue|number_format(2, ',', '.') }}</td>
+                                                    <td>R$ {{ d.amount|number_format(2, ',', '.') }}</td>
+                                                    <td></td>
+                                                </tr>
+
+
+                                                {% set oldLineId = d.typeId %}
+                                            {% else %}
+                                                <tr class="success">
+                                                    <td>{{ typeName }}</td>
+                                                    <td>{{ date }}</td>
+                                                    <td colspan="4">{{ note }}</td>
+                                                    <td>R$ {{ d.amount|number_format(2, ',', '.') }}</td>
+                                                </tr>
+                                            {% endif %}
+
+
+                                        {% endfor %}
+
+                                        {% if(statement.tab4|length == 0) %}
+                                            <tr>
+                                                <td colspan="7" align="center"><i>{{ "No moviments for period"|trans }}</i></td>
+                                            </tr>
+                                        {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th colspan="2" style="text-align: center;">{{ "Totals"|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td align="right">{{ "Total"|trans ~ " " ~ "Payments"|trans }}&nbsp;</td>
+                                <td align="right">R$ {{ statement.total.credit|number_format(2, ',', '.') }}</td>
+                            </tr>
+                            <tr>
+                                <td align="right">{{ "Total"|trans ~ " " ~ "Orders"|trans }}&nbsp;</td>
+                                <td align="right">R$ {{ statement.total.debit|number_format(2, ',', '.') }}</td>
+                            </tr>
+                            <tr>
+                                <td align="right">{{ "Balance"|trans }}&nbsp;</td>
+                                <td align="right"
+                                    style="color: {% if customer.balance < 0 %}red;{% else %}blue;{% endif %}">
+                                    R$ {{ customer.balance|number_format(2, ',', '.') }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block pageScripts %}
+    <script>
+        $(function () {
+
+            var exportPdf = $("#export-pdf");
+            var btnPdf = exportPdf.parent('a');
+            var id;
+            var days;
+
+            $(".days").on('click', function () {
+
+                exportPdf.data('days', $(this).find('i:first').data('days'));
+
+                id = exportPdf.data('id');
+                days = exportPdf.data('days');
+
+            });
+
+            btnPdf.click(function () {
+
+                $(this).attr('href', '{{ path('customer_statement_exp') }}' + id + '/' + days)
+
+            });
+
+
+        });
+    </script>
+
+{% endblock %}

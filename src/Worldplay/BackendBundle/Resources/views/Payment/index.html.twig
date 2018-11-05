@@ -1,0 +1,81 @@
+{% extends '::content.html.twig' %}
+{% import '::macro.html.twig' as table %}
+
+
+{% block contentTitle %}{{ "Payments"|trans }}{% endblock %}
+
+{% block contentBody %}
+
+    <div class="row">
+        <div class="col-md-12">
+
+            {{ filter_render(filter) }}
+
+            <div class="portlet-body custom-table">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>{{ "Id Payment"|trans }}</th>
+                            <th>{{ "Customer"|trans }}</th>
+                            <th>{{ "Amount"|trans }}</th>
+                            <th>{{ "Note"|trans }}</th>
+                            <th>{{ "ReceiveAt"|trans }}</th>
+                            <th>{{ "Actions"|trans }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for entity in result %}
+                            <tr class="odd gradeX">
+                                <td>{{ entity.id }}</td>
+                                <td>
+                                    <a class="btn btn-xs default btn-customer"
+                                       data-target="#modal"
+                                       data-id="{{ entity.customer.id }}"
+                                       data-toggle="modal"
+                                       href="{{ path('customer_show', { 'id': entity.customer.id}) }}">
+                                        {{ entity.customer.name }}
+                                    </a>
+                                </td>
+                                <td>R$ {{ entity.amount|number_format(2, ',', '.') }}</td>
+                                <td>{{ entity.note }}</td>
+                                <td>{{ entity.receivedAt | date('d/m/Y') }}</td>
+                                <td style="min-width: 80px; max-width: 80px;">
+                                    <a title="{{ "Edit"|trans }}" class="btn btn-xs blue-hoki"
+                                       href="{{ path('payment_edit',{'id':entity.id}) }}"><i
+                                                class="fa fa-edit"></i> </a>
+
+                                    <a title="{{ "Delete"|trans }}"
+                                       class="btn btn-xs red btn-delete"
+                                       data-toggle="modal"
+                                       data-id="{{ entity.id }}"
+                                       data-name="{{ entity.customer.name }}"
+                                       data-href="{{ path('payment_delete', {'id':entity.id}) }}">
+                                        <i class="fa fa-close"></i>
+                                    </a>
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+                        {% if filter.result|length == 0 %}
+
+                            <tr>
+                                <td colspan="100%" align="center">{{ "No data found"|trans }}</td>
+                            </tr>
+
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                {{ knp_pagination_render(filter.result, 'FilterBundle:Filter:pagination.html.twig') }}
+            </div>
+        </div>
+
+    </div>
+
+    {# Modal Delete #}
+    {% include 'BackendBundle:Payment:delete.html.twig' %}
+
+{% endblock %}

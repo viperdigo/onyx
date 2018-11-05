@@ -1,0 +1,11 @@
+services:
+  technobord_user.listener.user_listener:
+    class:  Worldplay\UserBundle\Listener\UserListener
+    arguments:
+      - "@security.encoder_factory"
+    tags:
+      - { name: doctrine.event_listener, event: prePersist }
+  technobord_user.controller.flash_message:
+    class: Worldplay\UserBundle\Controller\ServiceController
+#    arguments:
+#      - "@doctrine.orm.entity_manager"

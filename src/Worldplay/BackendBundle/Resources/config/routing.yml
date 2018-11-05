@@ -1,0 +1,3 @@
+template_homepage:
+    pattern:  /
+    defaults: { _controller: BackendBundle:Home:index }

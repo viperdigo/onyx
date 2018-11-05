@@ -1,0 +1,125 @@
+<script type="text/javascript">
+    $(function () {
+
+        /* non-submit form where press enter */
+        $(window).keydown(function (event) {
+            if (event.keyCode == 13) {
+                event.preventDefault();
+                return false;
+            }
+        });
+
+        /* get sale value product after change field */
+        $("select[name='product[]']").live("change", function () {
+
+
+            var $this = $(this);
+            var row = $this.parent().parent().parent();
+            var saleValue = row.find("input[name='saleValue[]']");
+
+            if ($(this).val() !== '') {
+
+                $.ajax({
+                    url: "{{ path('product_find_sale') }}",
+                    type: "POST",
+                    data: {'id': $this.val()},
+                    success: function (data) {
+                        saleValue.val(data).maskMoney('mask');
+                    },
+
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert('Error: ' + errorThrown);
+                    }
+                });
+
+            }else{
+                saleValue.val('');
+            }
+
+        });
+
+        /* add new line where press enter quantity */
+        $("input[name='quantity[]']").live("keydown", function (e) {
+
+            if (e.keyCode == 13) {
+
+                var $clone = $(this).closest('.products').clone();
+                console.log($clone);
+                $clone.find('label').remove();
+                $clone.find('span.required').remove();
+                $clone.find('.select2-container').remove();
+                $clone.find('input').val('');
+
+                $(this).closest('.products').after($clone);
+
+                $clone.find('.customSelect').select2().select2("val", "").focus();
+
+                Custom.init();
+            }
+
+        });
+
+        $(".deleteLine").live("click", function () {
+            var products = $(this).closest('.products');
+
+            console.log(count($('products')));
+
+            Total.init();
+        });
+
+        $("input[name='quantity[]']").live("blur", function () {
+
+            var $this = $(this);
+            var row = $this.parent().parent().parent();
+            var soldValue = row.find('input[name="soldValue[]"]').maskMoney('unmasked')[0].toFixed(2);
+            var saleValue = row.find('input[name="saleValue[]"]').maskMoney('unmasked')[0].toFixed(2);
+            var subtotal = row.find('input[name="subtotal[]"]');
+            var sum = 0;
+
+            if (soldValue == 0) {
+                sum = saleValue * $this.val();
+            } else {
+                sum = soldValue * $this.val();
+            }
+
+            sum = sum.toFixed(2);
+            subtotal.val(sum).maskMoney('mask');
+
+            Total.init();
+            Custom.init();
+
+        });
+
+        var Total = function () {
+
+            var calculate = function () {
+                var total = 0;
+                var sum = 0;
+                $('input[name="subtotal[]"]').each(function () {
+
+                    sum = $(this).maskMoney('unmasked')[0];
+
+                    total += sum;
+                });
+
+                total = total.toFixed(2);
+
+                $("#total").val("");
+                $("#total").val(total).maskMoney('mask');
+
+            };
+
+            return {
+
+                init: function () {
+                    calculate();
+                },
+
+            };
+
+        }();
+
+        Total.init();
+
+    });
+</script>

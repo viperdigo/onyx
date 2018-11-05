@@ -1,0 +1,104 @@
+{% extends '::content.html.twig' %}
+{% import '::macro.html.twig' as table %}
+
+
+{% block contentTitle %}{{ "Products"|trans }}{% endblock %}
+
+{% block contentBody %}
+
+    <div class="row">
+        <div class="col-md-12">
+
+            {{ filter_render(filter) }}
+
+            <div class="portlet-body custom-table">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>{{ "Id Product"|trans }}</th>
+                            <th>{{ "Description"|trans }}</th>
+                            <th>{{ "Type"|trans }}</th>
+                            <th>{{ "Cost value"|trans }}</th>
+                            <th>{{ "Sale value"|trans }}</th>
+                            <th>{{ "Storage"|trans }}</th>
+                            <th>{{ "Actions"|trans }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for entity in result %}
+                            <tr class="odd gradeX">
+                                <td>{{ entity.id }}</td>
+                                <td>{{ entity.description }}</td>
+                                <td>{{ entity.type|trans }}</td>
+                                <td>{{ entity.costValue }}</td>
+                                <td>{{ entity.saleValue }}</td>
+                                <td>{{ entity.storage }}</td>
+                                <td style="min-width: 50px; max-width: 50px;">
+
+                                    {% if(entity.type == 'simple') %}
+                                        {% set routeEdit = path('product_simple_edit',{'id':entity.id}) %}
+                                    {% elseif(entity.type == 'cabinet') %}
+                                        {% set routeEdit = path('product_cabinet_edit',{'id':entity.id}) %}
+                                    {% elseif(entity.type == 'compound') %}
+                                        {% set routeEdit = path('product_compound_edit',{'id':entity.id}) %}
+                                    {% endif %}
+
+                                    <a class="btn btn-xs blue-hoki"
+                                       href="{{ routeEdit }}"><i
+                                                class="fa fa-edit"></i></a>
+
+                                    {% if entity.type == 'compound' %}
+                                        <a class="btn btn-xs default btn-components"
+                                           data-target="#modal"
+                                           data-id="{{ entity.id }}"
+                                           data-toggle="modal">
+                                            <i class="fa fa-list"></i>
+                                        </a>
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+
+                        {% if filter.result|length == 0 %}
+
+                            <tr>
+                                <td colspan="100%" align="center">{{ "No data found"|trans }}</td>
+                            </tr>
+
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+                {{ knp_pagination_render(filter.result, 'FilterBundle:Filter:pagination.html.twig') }}
+            </div>
+        </div>
+
+    </div>
+
+    {# Modal Delete #}
+    {% include 'BackendBundle:Product:delete.html.twig' %}
+
+{% endblock %}
+
+{% block pageScripts %}
+    <script>
+        $(function () {
+            $('.btn-components').on("click", function (e) {
+                e.preventDefault();
+                var $id = $(this).data('id');
+                var $url = '{{ path('product_components',{'id':'id'}) }}';
+                $url = $url.replace('id', $id);
+
+                $(this).attr('href', $url);
+
+            });
+        });
+    </script>
+
+{% endblock %}

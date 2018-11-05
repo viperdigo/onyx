@@ -1,0 +1,166 @@
+{% extends '::content.html.twig' %}
+
+
+{% block contentTitle %}{{ "Compound"|trans }}{% endblock %}
+    {% block contentBody %}
+
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-plus"></i>{{ "New"|trans }}
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form action="{{ path('product_compound_create') }}" method="post" class="horizontal-form">
+                    <div class="form-body">
+                        <h3 class="form-section">{{ "Product Data"|trans }}</h3>
+
+                        <div class="row">
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">{{ "Product Reference"|trans }}</label>
+                                    <select id="productRef" name="productRef" class="select2me form-control">
+                                        <option value="">Selecione...</option>
+                                        {% for productCompound in productsCompounds %}
+
+                                            <option value="{{ productCompound.id }}">{{ productCompound.description }}</option>
+
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+
+                                <label class="control-label">{{ "Components"|trans }}</label>
+
+                                <div>
+                                    <a class="btn btn-icon-only default"
+                                       id="btn-components"
+                                       data-target="#modal"
+                                       data-toggle="modal">
+                                        <i class="fa fa-list"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">{{ "Description"|trans }}</label>
+                                    <input type="text" class="form-control" name="description">
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">{{ "Cost value"|trans }}</label>
+                                    <input type="text" class="form-control mask_currency" name="costValue">
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">{{ "Sale value"|trans }}</label>
+                                    <input type="text" class="form-control mask_currency" name="saleValue">
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="form-section">{{ "Components"|trans }}</h3>
+
+                        <div class="row components">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label oLabel">{{ "Product"|trans }}</label>
+                                    <select name="components[]" class="form-control customSelect">
+                                        <option value="">Selecione...</option>
+                                        {% for product in products %}
+                                            <option value="{{ product.id }}">{{ product.description }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <label class="control-label">{{ "Quantity"|trans }}</label>
+                                    <input type="text" class="form-control" placeholder="" name="quantity[]">
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+
+                                <label class="control-label">{{ "Actions"|trans }}</label>
+
+                                <div>
+                                    <a class="btn btn-icon-only green btn-add">
+                                        <i class="fa fa-plus"></i>
+                                    </a>
+                                    <a class="btn btn-icon-only red btn-remove">
+                                        <i class="fa fa-minus"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-1" style="float: right; margin-right: 15px;">
+                                        <button type="submit" class="btn green">{{ "Save"|trans }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    {% endblock %}
+
+{% block pageScripts %}
+    <script>
+        $(function () {
+
+            $('#btn-components').click(function (e) {
+
+                e.preventDefault();
+                var productRef = $("#productRef");
+                var url = '{{ path('product_components',{'id':'id'}) }}';
+
+                url = url.replace('id', productRef.val());
+                $(this).attr('href', url);
+
+            });
+
+            $(".btn-add").live("click", function () {
+
+                var $clone = $(this).closest('.components').clone();
+                $clone.find('label').remove();
+                $clone.find('.select2-container').remove();
+                $clone.find('input').val('');
+
+                $(this).closest('.components').after($clone);
+
+                $clone.find('.customSelect').select2();
+
+            });
+
+            $('.btn-remove').live("click", function () {
+                $(this).closest('.components').remove();
+            });
+
+
+        });
+    </script>
+{% endblock %}

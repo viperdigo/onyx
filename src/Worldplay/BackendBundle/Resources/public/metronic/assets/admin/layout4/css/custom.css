@@ -1,0 +1,53 @@
+@media only screen and (min-width: 990px) {
+
+    .datepicker.dropdown-menu {
+        margin-top: 80px;
+    }
+
+    .page-header.navbar {
+        height: 40px;
+        min-height: 40px;
+    }
+
+    .page-header.navbar .page-logo {
+        margin-top: -18px;
+    }
+
+    .page-header.navbar .page-top {
+        margin-top: -18px;
+    }
+
+    .page-header.navbar .top-menu .navbar-nav > li.dropdown-user .dropdown-toggle > img {
+        margin-top: -2px;
+        height: 30px;
+    }
+
+    .page-header.navbar .top-menu .navbar-nav > li.dropdown > .dropdown-toggle {
+        height: 50px;
+    }
+
+    .page-header.navbar .top-menu .navbar-nav > li.dropdown .dropdown-menu {
+        margin-top: -10px;
+        left: -39px;
+    }
+
+    .page-sidebar-wrapper {
+        margin-top: -40px;
+    }
+
+    .page-head .page-title {
+        margin-top: 40px;
+        float: left;
+        margin-right: 5px;
+    }
+
+    .page-content-wrapper {
+        margin-top: -50px;
+    }
+
+    .custom-table {
+        border-radius: 4px;
+        border: 1px solid #e1e1e1 !important;
+        background: white;
+    }
+}

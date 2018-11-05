@@ -1,0 +1,42 @@
+{% extends '::content.html.twig' %}
+
+
+{% block contentTitle %}{{ "Maintenances"|trans }}{% endblock %}
+    {% block contentBody %}
+
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-edit"></i>{{ "Edit"|trans }}
+                </div>
+            </div>
+            <div class="portlet-body form">
+                {{ form_start(edit_form) }}
+                <div class="form-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% for child in edit_form %}
+                                {{ form_row(child) }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="row">
+                                <div class="col-md-1" style="float: right; margin-right: 15px;">
+                                    <button type="submit" class="btn blue-hoki">{{ "Update" | trans }}</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                        </div>
+                    </div>
+                </div>
+
+                {{ form_end(edit_form) }}
+            </div>
+        </div>
+
+    {% endblock %}

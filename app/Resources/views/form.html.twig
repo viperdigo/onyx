@@ -1,0 +1,138 @@
+{% extends 'form_div_layout.html.twig' %}
+
+{% block form_start %}
+    {% set method = method|upper %}
+    {% if method in ["GET", "POST"] %}
+    {% set form_method = method %}
+{% else %}
+    {% set form_method = "POST" %}
+{% endif %}
+    <form name="{{ name }}" method="{{ form_method|lower }}" action="{{ action }}"{% for attrname, attrvalue in attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}{% if multipart %} enctype="multipart/form-data"{% endif %} novalidate>
+    {% if form_method != method %}
+    <input type="hidden" name="_method" value="{{ method }}" />
+{% endif %}
+{% endblock form_start %}
+
+{%- block form_widget_simple -%}
+    {%- set type = type|default('text') -%}
+    <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+{%- endblock form_widget_simple -%}
+
+{% block choice_widget_collapsed %}
+    {% spaceless %}
+        {% if required and empty_value is none and not empty_value_in_choices and not multiple %}
+            {% set required = false %}
+        {% endif %}
+        <select class="form-control select2me customSelect" {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+            <option value="">Selecione...</option>
+            {% if empty_value is not none %}
+                <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
+            {% endif %}
+            {% if preferred_choices|length > 0 %}
+                {% set options = preferred_choices %}
+                {{ block('choice_widget_options') }}
+                {% if choices|length > 0 and separator is not none %}
+                    <option disabled="disabled">{{ separator }}</option>
+                {% endif %}
+            {% endif %}
+            {% set options = choices %}
+            {{ block('choice_widget_options') }}
+        </select>
+        {#{{- form_errors(form) -}}#}
+    {% endspaceless %}
+{% endblock choice_widget_collapsed %}
+
+{% block button_widget %}
+    {% spaceless %}
+        {% if label is empty %}
+            {% set label = name|humanize %}
+        {% endif %}
+        <button type="{{ type|default('button') }}" {{ block('button_attributes') }}
+                class="btn {% if type == 'submit' %}green{% else %}default{% endif %}"
+                >{{ label|trans({}, translation_domain) }}</button>
+    {% endspaceless %}
+{% endblock button_widget %}
+
+{% block form_row %}
+    {% set formError = '' %}
+    {% if not form.vars.valid %}
+        {% set formError = 'has-error' %}
+    {% endif %}
+    <div class="form-group {{ formError }}">
+        {{- form_label(form, null,{'label_attr': {'class':'control-label col-md-3'}}) -}}
+        <div class="col-md-9">
+            {{- form_widget(form) -}}
+            {{- form_errors(form) -}}
+        </div>
+    </div>
+{% endblock form_row %}
+
+{% block widget_attributes %}
+    id="{{ id }}" name="{{ full_name }}"
+    {% if read_only %} readonly="readonly"{% endif %}
+    {% if disabled %} disabled="disabled"{% endif %}
+    {% if required %} data-required="1"{% endif %}
+    {% for attrname, attrvalue in attr %}
+        {{ " " }}
+        {% if attrname in ['class'] %}
+            class = "form-control {{ attrvalue }}"
+        {% else %}
+            class = "form-control"
+        {% endif %}
+        {% if attrname in ['placeholder', 'title'] %}
+            {{ attrname }}="{{ attrvalue|trans({}, translation_domain) }}"
+        {% elseif attrvalue is sameas(true) and attrname not in ['class'] %}
+            {{ attrname }}="{{ attrname }}"
+        {% elseif attrvalue is not sameas(false) and attrname not in ['class'] %}
+            {{ attrname }}="{{ attrvalue }}"
+        {% endif %}
+    {% endfor %}
+{% endblock widget_attributes %}
+
+{% block form_label %}
+    {% if label is not sameas(false) %}
+        {% if not compound %}
+    {% set label_attr = label_attr|merge({'for': id}) %}
+{% endif %}
+        {% if label is empty %}
+    {% if label_format is not empty %}
+        {% set label = label_format|replace({
+        '%name%': name,
+        '%id%': id,
+        }) %}
+    {% else %}
+        {% set label = name|humanize %}
+    {% endif %}
+{% endif %}
+        {% if required %}
+    {% set label_attr = label_attr|merge({'class': (label_attr.class|default(''))|trim}) %}
+            <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}
+                <span class="required" aria-required="true">* </span>
+            </label>
+    {% else %}
+    <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}</label>
+{% endif %}
+
+    {% endif %}
+{% endblock form_label %}
+
+{% block form_errors %}
+    {% if errors|length > 0 %}
+        <span class="help-block help-block-error">
+            {% for error in errors %}
+                {{ error.message }}
+            {% endfor %}
+        </span>
+    {% endif %}
+{% endblock form_errors %}
+
+{% block textarea_widget %}
+    <textarea class="form-control" {{ block('widget_attributes') }}>{{ value }}</textarea>
+{% endblock textarea_widget %}
+
+{%- block collection_widget %}
+    {% if prototype is defined %}
+        {% set attr = attr|merge({'data-prototype': form_row(prototype) }) %}
+    {% endif %}
+    {{ block('form_widget') }}
+{% endblock collection_widget %}

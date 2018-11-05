@@ -1,0 +1,168 @@
+{% extends '::content.html.twig' %}
+
+{% block contentTitle %}{{ "Order"|trans }}{% endblock %}
+
+{% block contentBody %}
+
+    <div class="portlet box blue-hoki">
+
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-plus"></i>{{ "New"|trans }}
+            </div>
+        </div>
+
+        <div class="portlet-body form">
+
+            <form action="{{ path('order_new') }}" method="post" class="horizontal-form" id="order">
+
+                <div class="form-body">
+
+                    <h3 class="form-section">{{ "Customer Data"|trans }}</h3>
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">{{ "Customer"|trans }}</label>
+                                <span class="required">* </span>
+                                <select name="customer" class="select2me form-control">
+                                    <option value="">Selecione...</option>
+                                    {% for customer in customers %}
+
+                                        <option value="{{ customer.id }}">{{ customer.name }}</option>
+
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label class="control-label">{{ "Note"|trans }}</label>
+                                    <textarea
+                                            name="note"
+                                            rows="1"
+                                            maxlength="225"
+                                            class="form-control"
+                                            id="maxlength_textarea"
+                                            ></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <h3 class="form-section">{{ "Items"|trans }}</h3>
+
+                    <div class="row products">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+
+                                <label class="control-label oLabel">{{ "Product"|trans }}</label>
+
+                                <span class="required">* </span>
+
+                                <select name="product[]" class="form-control customSelect">
+                                    <option value="">Selecione...</option>
+                                    {% for product in products %}
+                                        <option value="{{ product.id }}">{{ product.description }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+
+                                <label class="control-label">{{ "Sale value"|trans }}</label>
+
+                                <input type="text"
+                                       class="form-control mask_currency"
+                                       name="saleValue[]"
+                                       disabled>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+
+                                <label class="control-label">{{ "Saled Value"|trans }}</label>
+
+                                <input type="text"
+                                       class="form-control mask_currency"
+                                       name="soldValue[]">
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="control-label">{{ "Quantity"|trans }}</label>
+                                <span class="required">* </span>
+                                <input type="text" class="form-control numeric" name="quantity[]"/>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="control-label">{{ "Subtotal"|trans }}</label>
+
+                                <div class="input-group">
+                                    <input type="text" class="form-control mask_currency" name="subtotal[]" disabled/>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn red deleteLine"><i class="fa fa-close"></i></button>
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-2 col-sm-offset-10">
+                            <div class="form-group">
+                                <label class="control-label">{{ "Total"|trans }}</label>
+                                <input id="total" type="text" class="form-control mask_currency" disabled>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-1" style="float: right; margin-right: 15px;">
+                                    <button type="submit" class="btn green">{{ "Save"|trans }}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block pageScripts %}
+    {% include 'BackendBundle:Order:script.html.twig' %}
+
+    <script>
+        $(document).ready(function($){
+                var print_text = "<p>Test</p>";
+                var newWin = window.open('','printWindow','Toolbar=0,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=0,Resizable=0');
+                newWin.document.body.innerHTML = print_text;
+                newWin.document.body.onload = function() { newWin.print(); }
+
+        });
+    </script>
+
+{% endblock %}

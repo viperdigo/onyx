@@ -1,0 +1,89 @@
+{% extends '::base_report.html.twig' %}
+
+{% block body %}
+
+    <p>{{ "Customer"|trans ~ ": " ~ customer.name }}</p>
+
+    <table class="table table-bordered table-hover" style="width: 100%">
+        <thead>
+        <tr>
+            <th>{{ "Type"|trans }}</th>
+            <th>{{ "Date"|trans }}</th>
+            <th>{{ "Product"|trans }}</th>
+            <th>{{ "Quantity"|trans }}</th>
+            <th>{{ "Amount"|trans }}</th>
+            <th>{{ "Debit"|trans }}</th>
+            <th>{{ "Credit"|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% set oldLineId = '' %}
+
+        {% for d in statement %}
+
+            {% set note = '' %}
+            {% set typeName = d.type|trans %}
+            {% set date = d.createdAt|date('d/m/Y') %}
+            {% if d.note %}
+                {% set note = "Obs.: " ~ d.note %}
+            {% endif %}
+
+            {% if d.type == 'Order' %}
+
+                {% if oldLineId != d.typeId %}
+                    <tr class="warning">
+                        <td>{{ typeName }}</td>
+                        <td>{{ date }}</td>
+                        <td colspan="5">{{ note }}</td>
+                    </tr>
+                {% endif %}
+                <tr class="warning">
+                    <td colspan="2"></td>
+                    <td>{{ d.product }}</td>
+                    <td>{{ d.quantity }}</td>
+                    <td>R$ {{ d.soldValue|number_format(2, ',', '.') }}</td>
+                    <td style="color: blue;">R$ {{ d.amount|number_format(2, ',', '.') }}</td>
+                    <td></td>
+                </tr>
+                {% set oldLineId = d.typeId %}
+            {% else %}
+                <tr class="success">
+                    <td>{{ typeName }}</td>
+                    <td>{{ date }}</td>
+                    <td colspan="4">{{ note }}</td>
+                    <td style="color: red;">R$ {{ d.amount|number_format(2, ',', '.') }}</td>
+                </tr>
+            {% endif %}
+
+
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+
+    <table class="table table-bordered table-hover" style="width: 100%">
+        <thead>
+            <tr>
+                <th colspan="2">
+                    {{ "Totals"|trans }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td align="right">{{ "Total"|trans ~ " " ~ "Payments"|trans }}&nbsp;</td>
+                <td align="right">R$ {{ sumPayments|number_format(2, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td align="right">{{ "Total"|trans ~ " " ~ "Orders"|trans }}&nbsp;</td>
+                <td align="right">R$ {{ sumOrders|number_format(2, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td align="right">{{ "Balance"|trans }}&nbsp;</td>
+                <td align="right" style="color: {% if customer.balance < 0 %}red;{% else %}blue;{% endif %}">R$ {{ customer.balance|number_format(2, ',', '.') }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

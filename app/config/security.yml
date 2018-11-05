@@ -1,0 +1,33 @@
+security:
+    encoders:
+        Worldplay\CoreBundle\Entity\User: sha512
+
+    role_hierarchy:
+        ROLE_ADMIN:       ROLE_USER
+        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
+    providers:
+        dc_users_provider:
+          entity: {class: CoreBundle:User}
+
+    firewalls:
+        secured_area:
+            pattern:    ^/
+            form_login:
+                check_path: /login_check
+                login_path: /login
+            logout:
+                path:   /logout
+                target: /login
+            anonymous: ~
+            #http_basic:
+            #    realm: "Secured Demo Area"
+
+    access_control:
+    - { path: ^/(user|customer|order|product), roles: ROLE_USER }
+#    - { path: ^/maquina/create, roles: ROLE_USER }
+#    - { path: ^/maquina, roles: ROLE_USER }
+#    - { path: ^/maquina, roles: ROLE_USER, methods: POST }
+#    - { path: ^/maquina/(\+d)/edit, roles: ROLE_USER }
+#    - { path: ^/maquina/(\+d), roles: ROLE_USER, methods: (DELETE,PUT) }
+#    - { path: ^/maquina/(\+d), roles: ROLE_USER, methods: PUT }

@@ -1,0 +1,207 @@
+{% extends '::content.html.twig' %}
+{% import '::macro.html.twig' as table %}
+
+
+{% block contentTitle %}{{ "Maintenances"|trans }}{% endblock %}
+
+{% block contentBody %}
+
+    <div class="row">
+        <div class="col-md-12">
+
+            {{ filter_render(filter) }}
+
+            <div class="portlet-body custom-table">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>{{ "Id Maintenance"|trans }}</th>
+                            <th>{{ "Customer"|trans }}</th>
+                            <th>{{ "Product"|trans }}</th>
+                            <th>{{ "Quantity"|trans }}</th>
+                            <th style="text-align: center">{{ "Status"|trans }}</th>
+                            <th>{{ "Actions"|trans }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for entity in result %}
+                            <tr class="odd gradeX">
+                                <td style="vertical-align: middle">{{ entity.id }}</td>
+                                <td style="vertical-align: middle">{{ entity.customer }}</td>
+                                <td style="vertical-align: middle">{{ entity.product }}</td>
+                                <td style="vertical-align: middle">{{ entity.quantity }}</td>
+                                <td style="vertical-align: middle">
+                                    {% set dateEntered = "" %}
+                                    {% for log in entity.statusLogs %}
+
+                                        {% if log.status == "entered" %}
+                                            {% set dateEntered = log.createdAt|date('d/m/Y h:i:s') %}
+                                        {% endif %}
+
+                                        <p>{{ log.status|trans }} - {{ log.createdAt|date('d/m/Y h:i:s') }}</p>
+
+                                    {% endfor %}
+                                </td>
+                                <td style="min-width: 80px; max-width: 80px;">
+                                    <div class="margin-bottom-5">
+                                        <a class="btn btn-xs blue-hoki"
+                                           href="{{ path('maintenance_edit',{'id':entity.id}) }}"><i
+                                                    class="fa fa-edit"></i>
+                                        </a>
+
+                                        <a class="btn btn-xs red btn-delete"
+                                           data-toggle="modal"
+                                           data-id="{{ entity.id }}"
+                                           data-name="{{ entity.product.description|default('') }}"
+                                           data-href="{{ path('maintenance_delete', {'id':entity.id}) }}">
+                                            <i class="fa fa-close"></i>
+                                        </a>
+
+                                        {% if entity.status != 'returned' and entity.status != 'canceled' %}
+                                            <a class="btn btn-xs blue btn-change-status"
+                                               data-toggle="modal"
+                                               data-id="{{ entity.id }}"
+                                               data-name="{{ entity.product.description|default('') }}"
+                                               data-currentstatus="{{ entity.status|trans }}"
+                                               data-nextstatus="{{ entity.nextStatus|trans }}"
+                                               data-href="{{ path('maintenance_change_status', {'id':entity.id}) }}">
+                                                <i class="fa fa-refresh"></i>
+                                            </a>
+
+                                            <a class="btn btn-xs default btn-cancel"
+                                               data-toggle="modal"
+                                               data-id="{{ entity.id }}"
+                                               data-name="{{ entity.id }}"
+                                               data-href="{{ path('maintenance_cancel', {'id':entity.id}) }}">
+                                                <i class="fa fa-ban"></i>
+                                            </a>
+                                        {% endif %}
+
+                                        <a class="btn btn-xs purple btn-print"
+                                           data-toggle="modal"
+                                           data-id="{{ entity.id }}"
+                                           data-customername="{{ entity.customer.name }}"
+                                           data-dateentry="{{ dateEntered }}"
+                                           data-note="{{ entity.note }}">
+                                            <i class="fa fa-print"></i>
+                                        </a>
+                                    </div>
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+                        {% if filter.result|length == 0 %}
+
+                            <tr>
+                                <td colspan="100%" align="center">{{ "No data found"|trans }}</td>
+                            </tr>
+
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+                {{ knp_pagination_render(filter.result, 'FilterBundle:Filter:pagination.html.twig') }}
+            </div>
+        </div>
+
+    </div>
+
+    {# Modal Delete #}
+    {% include 'BackendBundle:Maintenance:delete.html.twig' %}
+
+    {# Modal Change Status #}
+    {% include 'BackendBundle:Maintenance:changeStatus.html.twig' %}
+
+    {# Modal Cancel #}
+    {% include 'BackendBundle:Maintenance:cancel.html.twig' %}
+
+{% endblock %}
+
+{% block pageScripts %}
+    <script>
+        $(function () {
+
+            var modalCancel = $('#modal-cancel');
+
+            $('.btn-cancel').on('click', function (e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                var name = $(this).data('name');
+                var href = $(this).data('href');
+
+                modalCancel.find('[data-id]').text(id);
+                modalCancel.find('[data-name]').text(name);
+                modalCancel.find('form').attr('action', href);
+                modalCancel.modal('show');
+            });
+
+            var modalChangeStatus = $('#modal-change-status');
+
+            $('.btn-change-status').on('click', function (e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                var name = $(this).data('name');
+                var href = $(this).data('href');
+                var currentStatus = $(this).data('currentstatus');
+                var nextStatus = $(this).data('nextstatus');
+
+                modalChangeStatus.find('[data-id]').text(id);
+                modalChangeStatus.find('[data-name]').text(name);
+                modalChangeStatus.find('[data-currentstatus]').text(currentStatus);
+                modalChangeStatus.find('[data-nextstatus]').text(nextStatus);
+                modalChangeStatus.find('form').attr('action', href);
+                modalChangeStatus.modal('show');
+            });
+
+            $('.btn-print').on('click', function () {
+                var maintenanceId = $(this).data('id');
+                var customerName = $(this).data('customername');
+                var dateEntry = $(this).data('dateentry');
+                var note = $(this).data('note');
+                var cr = "\n";
+
+                var textPrinter =
+                        "{{ "Maintenance"|trans }}: " + maintenanceId + cr
+                        + "{{ "Customer"|trans }}: " + customerName + cr
+                        + "{{ "Date"|trans }}: " + dateEntry + cr
+                        + "{{ "Note"|trans }}: " + note;
+
+                PrintLabel.init(textPrinter);
+
+            });
+
+            {% if maintenancePrint %}
+
+            var maintenanceId = "{{ maintenancePrint.id }}";
+            var customerName = "{{ maintenancePrint.customer.name }}";
+
+            {% set dateEntered = "" %}
+            {% for log in maintenancePrint.statusLogs %}
+
+                {% if log.status == "entered" %}
+                {% set dateEntered = log.createdAt|date('d/m/Y h:i:s') %}
+                {% endif %}
+
+            {% endfor %}
+
+            var dateEntry = "{{ dateEntered }}";
+            var note = "{{ maintenancePrint.note }}";
+            var cr = "\n";
+
+            var textPrinter =
+                    "{{ "Maintenance"|trans }}: " + maintenanceId + cr
+                    + "{{ "Customer"|trans }}: " + customerName + cr
+                    + "{{ "Date"|trans }}: " + dateEntry + cr
+                    + "{{ "Note"|trans }}: " + note;
+
+            PrintLabel.init(textPrinter);
+
+            {% endif %}
+
+        });
+    </script>
+{% endblock %}

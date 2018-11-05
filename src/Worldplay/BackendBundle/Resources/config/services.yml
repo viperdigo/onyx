@@ -1,0 +1,26 @@
+parameters:
+        worldplay.doctrine_listener.class: Worldplay\BackendBundle\Listener\DoctrineListener
+
+services:
+    doctrine_global_listener:
+        class: %worldplay.doctrine_listener.class%
+        tags:
+            - { name: doctrine.event_listener, event:preUpdate}
+            - { name: doctrine.event_listener, event:postUpdate}
+            - { name: doctrine.event_listener, event:postPersist}
+            - { name: doctrine.event_listener, event:preRemove}
+            - { name: doctrine.event_listener, event:postFlush}
+        arguments:    [@service_container]
+
+    worldplay.balance:
+        class: Worldplay\BackendBundle\Services\BalanceManager
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @service_container
+
+    worldplay.storage:
+        class: Worldplay\BackendBundle\Services\StorageManager
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @service_container
+

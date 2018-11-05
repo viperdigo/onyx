@@ -1,0 +1,19 @@
+parameters:
+    database_driver: pdo_mysql
+    database_host: 127.0.0.1
+    database_port: 3306
+    database_name: onyx
+    database_user: root
+    database_password: hseDP09zP
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    locale: pt
+    secret: ThisTokenIsNotSoSecretChangeIt
+    node_base_path: /usr/local/bin/node
+    node_modules_path: /usr/local/lib/node_modules
+    ruby_bin: /usr/local/bin/ruby
+    compass_bin: /usr/local/bin/compass
+    doctrine_memcached_host: 127.0.0.1
+    doctrine_memcached_port: 11211

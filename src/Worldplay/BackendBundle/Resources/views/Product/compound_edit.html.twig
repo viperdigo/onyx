@@ -1,0 +1,154 @@
+{% extends '::content.html.twig' %}
+
+
+{% block contentTitle %}{{ "Compound"|trans }}{% endblock %}
+    {% block contentBody %}
+
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-plus"></i>{{ "New"|trans }}
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form action="{{ path('product_compound_update') }}" method="post" class="horizontal-form">
+                    <div class="form-body">
+                        <h3 class="form-section">{{ "Product Data"|trans }}</h3>
+
+                        <div class="row">
+
+                            <input type="hidden" name="product" value="{{ product.id }}">
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">{{ "Description"|trans }}</label>
+                                    <input type="text" class="form-control" name="description"
+                                           value="{{ product.description }}">
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">{{ "Cost value"|trans }}</label>
+                                    <input type="text" class="form-control" name="costValue"
+                                           value="{{ product.costValue }}">
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">{{ "Sale value"|trans }}</label>
+                                    <input type="text" class="form-control" name="saleValue"
+                                           value="{{ product.saleValue }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="form-section">{{ "Components"|trans }}</h3>
+
+                        {% set index = 0 %}
+
+                        {% for component in product.components %}
+
+                            <div class="row components">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        {% if index == 0 %}
+                                            <label class="control-label oLabel">{{ "Product"|trans }}</label>
+                                        {% endif %}
+                                        <select name="components[]" class="form-control customSelect">
+                                            <option value="">Selecione...</option>
+                                            {% for p in products %}
+
+                                                {% if(p.id == component.component.id ) %}
+                                                    <option value="{{ p.id }}" selected>{{ p.description }}</option>
+                                                {% else %}
+                                                    <option value="{{ p.id }}">{{ p.description }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        {% if index == 0 %}
+                                            <label class="control-label">{{ "Quantity"|trans }}</label>
+                                        {% endif %}
+                                        <input type="text" class="form-control" placeholder="" name="quantity[]"
+                                               value="{{ component.quantity }}">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+
+                                    {% if index == 0 %}
+                                        <label class="control-label">{{ "Actions"|trans }}</label>
+                                    {% endif %}
+
+                                    <div>
+                                        <a class="btn btn-icon-only green btn-add">
+                                            <i class="fa fa-plus"></i>
+                                        </a>
+                                        <a class="btn btn-icon-only red btn-remove">
+                                            <i class="fa fa-minus"></i>
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            {% set index = 1 %}
+
+                        {% endfor %}
+
+                    </div>
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-1" style="float: right; margin-right: 15px;">
+                                        <button type="submit" class="btn green">{{ "Update"|trans }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    {% endblock %}
+
+{% block pageScripts %}
+    <script>
+        $(function () {
+
+            $(".btn-add").live("click", function () {
+
+                var $select = $('#oSelect');
+
+                var $clone = $(this).closest('.components').clone();
+                $clone.find('label').remove();
+                $clone.find('.select2-container').remove();
+                $clone.find('input').val('');
+
+                $(this).closest('.components').after($clone);
+
+                $clone.find('.oLabel').after($select);
+                $clone.find('.customSelect').select2();
+                $clone.find('.customSelect').select2("val","");
+
+            });
+
+            $('.btn-remove').live("click", function () {
+                $(this).closest('.components').remove();
+            });
+
+
+        });
+    </script>
+{% endblock %}

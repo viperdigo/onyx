@@ -1,0 +1,14 @@
+cliente:
+    resource: "@BackendBundle/Controller"
+    prefix:   /
+    type: annotation
+
+user:
+    resource: "@UserBundle/Controller"
+    prefix:   /
+    type: annotation
+
+#template:
+#    resource: "@TemplateBundle/Controller"
+#    prefix:   /
+#    type: annotation

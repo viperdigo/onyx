@@ -1,0 +1,148 @@
+{% extends '::content.html.twig' %}
+
+{% block contentTitle %}{{ "Customers"|trans }}{% endblock %}
+
+{% block contentBody %}
+
+    <div class="row">
+        <div class="col-md-12">
+
+            {{ filter_render(filter) }}
+
+            <div class="portlet-body custom-table">
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>{{ "Customer"|trans }}</th>
+                            <th>{{ "Name"|trans }}</th>
+                            <th>{{ "Balance"|trans }}</th>
+                            <th>{{ "LastPayment"|trans }}</th>
+                            <th>{{ "Actions"|trans }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for entity in filter.result %}
+                            <tr class="odd gradeX">
+                                <td>{{ entity._id }}</td>
+                                <td>{{ entity._name }}</td>
+                                <td>R$ {{ entity._balance|number_format(2, ',', '.') }}</td>
+                                <td>{{ entity._date|date('d/m/Y') }}</td>
+                                <td style="min-width: 70px; max-width: 70px;">
+                                    <a title="{{ "Statement"|trans }}" class="btn btn-xs default"
+                                       href="{{ path('customer_statement',{'id':entity._id}) }}">
+                                        <i class="fa fa-list"></i>
+                                    </a>
+
+                                    <a title="{{ "Edit"|trans }}" class="btn btn-xs blue-hoki"
+                                       href="{{ path('customer_edit',{'id':entity._id}) }}">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+
+                                    <a title="{{ "Delete"|trans }}"
+                                       class="btn btn-xs red btn-delete"
+                                       data-toggle="modal"
+                                       data-id="{{ entity._id }}"
+                                       data-name="{{ entity._name }}"
+                                       data-href="{{ path('customer_delete', {'id':entity._id}) }}">
+                                        <i class="fa fa-close"></i>
+                                    </a>
+
+                                    {% if(entity._status == 'blocked') %}
+
+                                        {% set buttonColor = "green" %}
+                                        {% set buttonModalType = "btn-activate" %}
+                                        {% set buttonText = "Activate"|trans %}
+                                        {% set buttonHref = path('customer_activate', {'id':entity._id}) %}
+                                        {% set icon = 'check-circle' %}
+
+                                    {% else %}
+
+                                        {% set buttonColor = "red" %}
+                                        {% set buttonModalType = "btn-blocke" %}
+                                        {% set buttonText = "Block"|trans %}
+                                        {% set buttonHref = path('customer_block', {'id':entity._id}) %}
+                                        {% set icon = 'ban' %}
+
+                                    {% endif %}
+
+                                    <a title="{{ buttonText }}"
+                                       class="btn btn-xs {{ buttonColor }} {{ buttonModalType }}"
+                                       data-toggle="modal"
+                                       data-id="{{ entity._id }}"
+                                       data-name="{{ entity._name }}"
+                                       data-href="{{ buttonHref }}">
+                                        <i class="fa fa-{{ icon }}"></i>
+                                    </a>
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+                        {% if filter.result|length == 0 %}
+
+                            <tr>
+                                <td colspan="100%" align="center">{{ "No data found"|trans }}</td>
+                            </tr>
+
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {#<div class="row">#}
+                {#{{ knp_pagination_render(filter.result, 'FilterBundle:Filter:pagination.html.twig') }}#}
+            {#</div>#}
+
+        </div>
+
+    </div>
+
+    {# Modal Delete #}
+    {% include 'BackendBundle:Customer:delete.html.twig' %}
+
+    {# Modal Block #}
+    {% include 'BackendBundle:Customer:block.html.twig' %}
+
+    {# Modal Activate #}
+    {% include 'BackendBundle:Customer:activate.html.twig' %}
+
+    {# Modal Show #}
+
+{% endblock %}
+
+{% block pageScripts %}
+    <script>
+        $(function () {
+            var modalActivate = $('#modal-activate');
+
+            $('.btn-activate').on('click', function (e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                var name = $(this).data('name');
+                var href = $(this).data('href');
+
+                modalActivate.find('[data-id]').text(id);
+                modalActivate.find('[data-name]').text(name);
+                modalActivate.find('form').attr('action', href);
+                modalActivate.modal('show');
+            });
+
+            var modalBlock = $('#modal-block');
+
+            $('.btn-blocke').on('click', function (e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                var name = $(this).data('name');
+                var href = $(this).data('href');
+
+                modalBlock.find('[data-id]').text(id);
+                modalBlock.find('[data-name]').text(name);
+                modalBlock.find('form').attr('action', href);
+                modalBlock.modal('show');
+            });
+        });
+    </script>
+
+{% endblock %}

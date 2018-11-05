@@ -1,0 +1,77 @@
+{% extends '::content.html.twig' %}
+
+{% block contentTitle %}{{ "Orders"|trans }}{% endblock %}
+
+{% block contentBody %}
+
+    <div class="row">
+        <div class="col-md-12">
+
+            {{ filter_render(filter) }}
+
+            <div class="portlet-body custom-table">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>{{ "Id Order" | trans }}</th>
+                            <th>{{ "Customer" | trans }}</th>
+                            <th>{{ "Amount" | trans }}</th>
+                            <th>{{ "CreatedAt" | trans }}</th>
+                            <th>{{ "Actions" | trans }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for order in result %}
+                            <tr class="odd gradeX">
+                                <td>{{ order.id }}</td>
+                                <td>
+                                    <a class="btn btn-xs default btn-customer"
+                                       data-target="#modal"
+                                       data-id="{{ order.customer.id }}"
+                                       data-toggle="modal"
+                                       href="{{ path('customer_show', { 'id': order.customer.id}) }}">
+                                        {{ order.customer.name }}
+                                    </a>
+                                </td>
+                                <td>{{ order.amount }}</td>
+                                <td>{{ order.createdAt | date('d/m/Y h:i:s') }}</td>
+                                <td style="min-width: 80px; max-width: 80px;">
+                                    <a title="{{ "Edit"|trans }}" class="btn btn-xs blue-hoki"
+                                       href="{{ path('order_edit',{'id':order.id}) }}">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <a title="{{ "Delete"|trans }}"
+                                       class="btn btn-xs red btn-delete"
+                                       data-toggle="modal"
+                                       data-id="{{ order.id }}"
+                                       data-href="{{ path('order_delete', {'id':order.id}) }}">
+                                        <i class="fa fa-close"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% if filter.result|length == 0 %}
+
+                            <tr>
+                                <td colspan="100%" align="center">{{ "No data found"|trans }}</td>
+                            </tr>
+
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="row">
+                {{ knp_pagination_render(filter.result, 'FilterBundle:Filter:pagination.html.twig') }}
+            </div>
+
+        </div>
+    </div>
+
+    {# Modal Delete #}
+    {% include 'BackendBundle:Order:delete.html.twig' %}
+
+{% endblock %}
